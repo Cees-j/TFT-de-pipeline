@@ -1,2 +1,4 @@
 venv/
 *.csv
+enviro.variables.py
+__pycache__/
