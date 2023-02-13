@@ -4,3 +4,4 @@ enviro_variables.py
 __pycache__/
 credentials.json
 terraform.tfvars
+.terraform*
