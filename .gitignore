@@ -5,3 +5,5 @@ __pycache__/
 credentials.json
 terraform.tfvars
 .terraform*
+terraform.tfstate
+terraform.tfstat*
