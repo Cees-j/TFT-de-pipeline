@@ -9,7 +9,7 @@ header = {
         "X-Riot-Token": API_KEY
     }
 platform = "europe"
-puuid = "vNT_SxEHkPpZd0zJW0VvnK7u3rDyfn3cfofpce6c_tzsS6hzcH-t7mQM6W0yLO-1Y4RbMxKQFqQFQw"
+puuid = "q7Czl1-xj3ykT0mRGWrauBfkUAJi2Gh4e1kA6WbUmlmEpcSlWOhl-e_nSlVjIsmBfcjPdAgfacXefQ"
 
 puuid_names_df = pd.read_csv("puuid_names_data_euw1.csv") ## reading the local df so i can iterate over puuids and insert into get match
 
@@ -23,12 +23,14 @@ def get_match_by_puuid(platform, puuid, header):
     matches_for_puuid_response = requests.get(match_ids_by_puuid_url, headers=header)
     match_ids = matches_for_puuid_response.json()
 
-
+    print (match_ids)
     return match_ids
 
 def get_detailed_match_information(match_ids, header):
     '''Gets detailed match information, gets info, and then more detailed one, the more 
-    detailed one contains the actual matches and all players, has lots of nested data returned'''
+    detailed one contains the actual matches and all players, has lots of nested data returned
+    matches.csv returns the match history.
+    detailed_matches.csv returns the configuration of all the players within those matches'''
     time.sleep(1.5)
     print('getting detailed match information')
 
@@ -37,16 +39,20 @@ def get_detailed_match_information(match_ids, header):
     for match_id in match_ids:
         match_url = f"https://{platform}.api.riotgames.com/tft/match/v1/matches/{match_id}"
         individual_match_response = requests.get(match_url, headers=header)
-        match = individual_match_response.json()
+        print(individual_match_response)
+        match = individual_match_response.text
+        print(match)
 
         
-        matches.append(match['info'])
-        detailed_match_info.append(match['info']['participants'])
+        matches.append(match)
+        # detailed_match_info.append(match['info']['participants'])
  
     df = pd.DataFrame(matches)
-    df.to_csv("matches3.csv", index=False)
-    detailed_match_info_df = pd.DataFrame(detailed_match_info, columns=['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8'])
-    detailed_match_info_df.to_csv("detailed_matches3.csv", index=False)
+    df.to_json("matches_json_String.json")
+    
+
+    # detailed_match_info_df = pd.DataFrame(detailed_match_info, columns=['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8'])
+    # detailed_match_info_df.to_csv("detailed_matches3.csv", index=False)
 
 
 get_detailed_match_information(get_match_by_puuid(puuid=puuid, platform=platform, header=header), header)

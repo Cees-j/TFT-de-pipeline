@@ -1,4 +1,5 @@
 import pandas as pd
+import json
 '''Each match history, has the 8 players combined boards in JSON, so you have 8 json entries to deal with.
 so when you print row0, you're getting first game. There are 20 games. 20*8 160 json entries, 
  For example, you can have a "Match" table with columns such as "Match ID", "Level", "Placement", etc. Then you can have an 
@@ -29,18 +30,31 @@ so when you print row0, you're getting first game. There are 20 games. 20*8 160 
 # You would need a match id table containing name, gold_left, last_round, level, placements_ players_elim, 
 # then an augments for that specific match_id, and units, and that needs to be done for each player 
 
-
+'''Can i get one match, one player, formatted in a json correctly, with the puuid at the start.'''
 read_data_df = pd.read_csv('detailed_matches3.csv', index_col=False)
 
 # print(read_data_df)
 
 row0 = read_data_df.loc[0]
-# print(row0)
-single_row = ''
-for row in row0:
-    print(row)
-    print(type(row))
-    single_row += row
-    break
 
-# print(read_data_df.m1.to_string(index=False))
+# read_matches_df = pd.read_csv('matches3.csv', index_col=False)
+# print(read_matches_df)
+print(row0)
+# json_one_match = row0.to_json(orient='records') # turns the row into json
+
+# print(json_one_match)
+# print(type(json_one_match))
+
+json_column = read_data_df["m1"].apply(json.loads)
+
+def update_json(d):
+    d["new_key"] = "new_value"
+    return d
+
+json_column = json_column.apply(update_json)
+
+# Update the DataFrame with the modified JSON data
+read_data_df["json_column"] = json_column.apply(json.dumps)
+
+# Save the DataFrame back to the CSV file
+read_data_df.to_csv("file.csv", index=False)

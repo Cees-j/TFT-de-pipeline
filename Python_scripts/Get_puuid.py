@@ -3,7 +3,7 @@ import requests
 from envrio_variables import API_KEY
 
 # Should return PUUID of a summoner 
-chall_df = pd.read_csv("challenger_data_3_euw1.csv") ## reading locally so can iterate
+chall_df = pd.read_csv("challenger_data_euw1.csv") ## reading locally so can iterate
 
 def format_dataframe_and_isolate_names(dataframe):
     sorted_chall_df = dataframe.sort_values(by=['leaguePoints'], ascending=False).head(3)

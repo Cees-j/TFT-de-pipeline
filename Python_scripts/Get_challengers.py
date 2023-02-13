@@ -12,7 +12,9 @@ def get_chall_ladder_data(region):
 
     challenger_df = pd.DataFrame(chall_data['entries'])
     challenger_df.drop(columns=['veteran', 'freshBlood'], axis=1, inplace=True)
-    challenger_df.to_csv(f"challenger_data_3_{region}.csv", index=False)
+    challenger_df.to_csv(f"challenger_data_{region}.csv", index=False)
+
+    print(f'Success - acquired challenger ladder for {region}')
 
 
 
