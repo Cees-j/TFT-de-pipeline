@@ -10,68 +10,56 @@ import os
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './credentials.json' 
 class GetInformation:
-    def __init__(self, api_version, column, dl_bucket, dl_filename, region, extract_col):
-        '''This class can take an item from a csv store, then iterate over that file and make an
-        api call based on a row in the csv. Then from that api call it will store a csv'''
-        self.api_version = api_version
+    def __init__(self, column, dl_bucket, dl_filename,  extract_col):
+        '''This class can take an item from a csv store, then iterate over that file
+        and take whichever column it is you need from the csv, and store that in a list, which 
+        can then be given to another class to make api calls.'''
+
         self.column = column
         self.download_bucket = dl_bucket
         self.download_filename = dl_filename
-        self.region = region
         self.extract_col = extract_col
+        self.result_list = []
 
-        self.api_endpoint = f"https://{region}.api.riotgames.com/{api_version}"
 
-    def process_csv_file(self):
-        print('downloading file')
-        file_name = self.download_filename
-        extract_col = self.extract_col
-        storage_client = storage.Client()
-        bucket = storage_client.bucket(self.download_bucket)
-        blob = bucket.blob(file_name)
-        contents = blob.download_as_string().decode('utf-8')
-
-        reader = csv.reader(contents.split('\n'))
-        next(reader)    
+    def process_csv_file(self, csv_reader): 
+        print('processing file')
+        extract_col = self.extract_col  
+        self.reader = csv_reader 
+        
+        next(self.reader) # Skips column titles
 
         count = 0
-        for row in reader:
+        for row in csv_reader:
             count += 1
             if count > 25:
                 break
             if len(row)>2:
                 extracted_row = row[extract_col]
                 print(extracted_row)
+                self.result_list.append(extracted_row)
                 # result = api_call(puuid)
+        
+
+    def download_csv_file(self):
+        print('downloading file')
+        file_name = self.download_filename
+        
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(self.download_bucket)
+        blob = bucket.blob(file_name)
+        contents = blob.download_as_string().decode('utf-8')
+
+        csv_reader = csv.reader(contents.split('\n'))
+        self.process_csv_file(csv_reader)
+        return csv_reader
 
     def make_api_call(self):
         pass
 
-info = GetInformation("lol/summoner/v4/summoners/by-name/{name}?api_key={API_KEY}",
-                      'puuid', 'csv-store-10001', 'Get_PUUID_euw.csv', 'euw1', 2)
+info = GetInformation('puuid', 'csv-store-10001', 'Get_PUUID_euw.csv', 2)
 
-info.process_csv_file()
-    # def get_data(self, filter_func=None):
-    #     with open(self.csv_filename, 'r') as csv_file:
-    #         csv_reader = csv.reader(csv_file)
-    #         headers = next(csv_reader)  # read the header row
+info.download_csv_file()
+print(info.result_list)
 
-    #         if not 'puuid' in headers:
-    #             raise ValueError('CSV file must contain a column called "puuid"')
-
-    #         data = []
-    #         for row in csv_reader:
-    #             if filter_func and not filter_func(row):
-    #                 continue
-
-    #             puuid = row[headers.index('puuid')]
-    #             url = f'{self.api_endpoint}/{puuid}'
-    #             response = requests.get(url)
-
-    #             if response.status_code == 200:
-    #                 data.append(response.json())
-    #             else:
-    #                 print(f'Error {response.status_code} for puuid {puuid}')
-
-    #     return data
-    
+#  self.api_endpoint = f"https://{region}.api.riotgames.com/{api_version}"
