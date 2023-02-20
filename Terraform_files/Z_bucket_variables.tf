@@ -24,3 +24,17 @@ description = "Google Cloud region"
 type        = string
 default     = "europe-west2"
 }
+
+variable "get_chall_euw_url" {
+    description = "gs url for bucket and file"
+    type        = string
+    default     = "europe-west2"
+}
+
+variable "get_chall_euw_dataset_id" {
+    description = "id for get_chall dataset"
+    type        = string
+    default     = "europe-west2"
+}
+
+
