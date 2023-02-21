@@ -1,35 +1,24 @@
-from Classes import GetInformation, API_caller, csv_store_function
+from Classes_2 import GetInformation, api_string_constructor, process_response_object, csv_store_function
 from api_key import API_KEY
 '''This will return someones match history and store it in a csv'''
-Get_puuid = GetInformation('puuid', 'csv-store-10001', 'Get_PUUID_euw.csv', 2)
+# f"https://{platform}.api.riotgames.com/tft/match/v1/matches/by-puuid/{puuid}/ids"
 
-# print(Get_puuid.download_csv_file())
+# get chall -> get puuid (takes names from chall data set) -> get match (takes puuid from puuid)
 
-returned_csv_object_containing_puuid = Get_puuid.download_csv_file() # This downloads a file
-# from GCS and then makes a list which api calls can be made from
+Get_info = GetInformation('puuid', 'csv-store-10001', 'sailmate', 2)
 
-# print(returned_csv_object_containing_puuid)
+initial_data = Get_info.download_csv_file()
 
-get_matches_api_caller = API_caller(returned_csv_object_containing_puuid,
-'europe', 
-api_endpoint='tft/match/v1/matches/by-puuid/{specific}/ids?api_key={API_KEY}', API_KEY=
-API_KEY, entrypoint_in_return_json=None)
+print('Data to iterate over:', initial_data)
 
-# print(get_matches_api_caller.make_api_call())
+response_data = api_string_constructor(initial_data,
+                        api_endpoint="https://europe.api.riotgames.com/tft/match/v1/matches/by-puuid/{specific}/ids?api_key={API_KEY}",
+                        API_KEY=API_KEY)
 
-dataframe_from_api = get_matches_api_caller.make_api_call()
+print(response_data)
 
-csv_store_function(dataframe_from_api, 'euw-matches.csv')
+processed_data = process_response_object(response_data, nested_key=None)
 
-# May have made this more confusing by making it a class, dont know if theres so much distinction
-# between the methods that this wasnt a good idea. 
-# I have to make it into a list, then into a dataframe in the store section
-# then upload that dataframe as csv.. EH ITS OK
-# No it doesnt work, I need to query it, get back that row, and insert that data into
-# whats already there. List doesnt work.
-# So basically the question is how can i append to a dataframe += 
-# Should just be one column of data matches for 1 guy, next column inserted another chunk,
-# Damn maybe made it too complicated using classes
-# So you instantiate the empty dataframe, then need to join the returning data for 
-# each call. So its fine if theres only 1 call for chall data, but everything else
-# needs to append 
+print (processed_data)
+
+csv_store_function(processed_data, 'sailmate2')

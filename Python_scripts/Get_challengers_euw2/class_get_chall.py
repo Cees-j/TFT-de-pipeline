@@ -1,17 +1,17 @@
-from Classes import API_caller, csv_store_function
+from Classes_2 import process_response_object, csv_store_function, api_string_constructor
 from api_key import API_KEY
-'''The api caller in this case is 1, there are not multiple entries instead a list is given back
-region for this is euw1
-api_version refers to endpoint'''
 
-get_chall_api_caller = API_caller(['1'], region='euw1',
-api_endpoint='tft/league/v1/challenger?api_key={API_KEY}',
-API_KEY=API_KEY, entrypoint_in_return_json='entries')
-
-# get_chall_data = get_chall_api_caller.make_api_call
-
-# Calling store with file name of Get_Chall2_euw.csv on the returning api dataframe
-# from making the api call
-csv_store_function(get_chall_api_caller.make_api_call(), 'Get_Chall2_euw.csv')
+'''This is saying, for one iteration, make a request to this url, and then
+process that data to achieve your level of nested data that you want, and then
+store that in the csv-store with a certain file name'''
 
 
+
+
+response_data = api_string_constructor(['1'], 
+                       api_endpoint='https://euw1.api.riotgames.com/tft/league/v1/challenger?api_key={API_KEY}',
+                       API_KEY=API_KEY)
+
+processed_data = process_response_object(response_data, nested_key='entries')
+
+csv_store_function(processed_data, 'euw_chall.csv')
