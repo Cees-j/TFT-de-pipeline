@@ -1,4 +1,4 @@
-# Data Engineering Project
+# Data Engineering Project ( Work In Progress ) 
 This is a data engineering project that retrieves data from an API, transforms it, and loads it into BigQuery using a set of Python scripts. The project is designed to use Cloud Functions for retrieving and transforming data, and to run in GCP Cloud Composer, an Apache Airflow-based workflow orchestration service. The infrastructure for the project is provisioned using Terraform.
 
 # Project Structure
