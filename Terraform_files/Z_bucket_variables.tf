@@ -37,4 +37,8 @@ variable "get_chall_euw_dataset_id" {
     default     = "europe-west2"
 }
 
-
+variable "api_secret_id" {
+    description = "api_key stored in secrets manager"
+    type        = string
+    default     = "https://developer.riotgames.com/"
+}
