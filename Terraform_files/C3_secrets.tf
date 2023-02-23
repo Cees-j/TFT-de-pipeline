@@ -20,8 +20,8 @@ resource "google_secret_manager_secret" "secret-basic_api_key" {
 resource "google_secret_manager_secret_version" "example_secret_version_api_key" {
   secret    = google_secret_manager_secret.secret-basic_api_key.id # uses the return attrib ref from above
   
-  # Set the value of the new version
-  secret_data = "RGAPI-55f09d30-553e-470a-88de-cc98f2db78ba"
+  # Need to change this secret_data a lot # hopefully just changes the internals, then dont need to remake functions etc
+  secret_data = "RGAPI-8b11abca-8522-49c9-b1e0-0d91d0a551c6"
 
   depends_on = [google_secret_manager_secret.secret-basic_api_key]
     

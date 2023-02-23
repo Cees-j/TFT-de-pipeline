@@ -1,7 +1,7 @@
 # Get_chall_function
 # If deploying each time API_KEY resets, then need to make sure I delete the function first and remake it. Which is annoying
 resource "google_cloudfunctions2_function" "get_chall_euw_function2" {
-  name = "get-chall-euw-function34"
+  name = "get-chall-euw-function40"
   location = "europe-west2"
   description = "Get challengers leaderboard function"
 
@@ -26,7 +26,7 @@ resource "google_cloudfunctions2_function" "get_chall_euw_function2" {
       key        = var.api_secret_id
       project_id = var.project_id
       secret     = var.api_secret_id
-      version    = 1
+      version    = "latest"
     }
   }
   depends_on = [google_secret_manager_secret_iam_member.api_key_secret_iam_02]
@@ -45,18 +45,18 @@ resource "google_project_iam_member" "gcf-invoking-email-service-accout" {
 
 
 
-resource "google_cloudfunctions2_function" "get_puuid_euw_function" {
-  name = "get-puuid-euw-function10"
+resource "google_cloudfunctions2_function" "get_puuid_euw_function2" {
+  name = "get-puuid-euw-function40"
   location = "europe-west2"
   description = "Get puuid from reading chall csv for euw function"
 
   build_config {
     runtime = "python39"
-    entry_point = "process_csv_file"  # Set the entry point 
+    entry_point = "entrypoint"  # Set the entry point 
     source {
       storage_source {
         bucket = var.python_script_bucket_name
-        object = "Get_puuid.zip"
+        object = "Get_puuid2.zip"
       }
     }
   }
@@ -65,7 +65,47 @@ resource "google_cloudfunctions2_function" "get_puuid_euw_function" {
     max_instance_count  = 1
     available_memory    = "256M"
     timeout_seconds     = 60
+
+  secret_environment_variables {
+    key        = var.api_secret_id
+    project_id = var.project_id
+    secret     = var.api_secret_id
+    version    = "latest"
+    }
   }
+  depends_on = [google_storage_bucket_object.get_puuid_script2]
+} 
+
+
+resource "google_cloudfunctions2_function" "get_matches_euw_function2" {
+  name = "get-matches-euw-function40"
+  location = "europe-west2"
+  description = "Get puuid from reading chall csv for euw function"
+
+  build_config {
+    runtime = "python39"
+    entry_point = "entrypoint"  # Set the entry point 
+    source {
+      storage_source {
+        bucket = var.python_script_bucket_name
+        object = "Get_matches2.zip"
+      }
+    }
+  }
+
+  service_config {
+    max_instance_count  = 1
+    available_memory    = "256M"
+    timeout_seconds     = 60
+
+  secret_environment_variables {
+    key        = var.api_secret_id
+    project_id = var.project_id
+    secret     = var.api_secret_id
+    version    = "latest"
+    }
+  }
+  depends_on = [google_storage_bucket_object.get_matches_script]
 } 
 
 # # terraform the composer environment too 

@@ -2,16 +2,16 @@ import csv
 import requests
 from google.cloud import storage
 import pandas as pd
-from api_key import API_KEY
-import os
 import logging
 import csv
-import numpy as np
+import os 
+
+API_KEY = os.environ.get('API_KEY')
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './credentials.json' 
+# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './credentials.json' 
 
 class StorageError(Exception):
     '''Custom exception for storage-related errors'''
@@ -74,8 +74,9 @@ def process_response_object(res_json, nested_key):
     '''If there is nested data from the response object then this function
     will dig down and get the level of data you need, otherwise it will just make 
     it into a dataframe which can be then be used to turn into a csv and stored'''
-    print('Processing response object')
+    logging.info('Processing response object')
     if nested_key:
+        logging.warning(f'Accessing {nested_key} of {res_json}')
         dataframe = pd.DataFrame(res_json[0][nested_key])
     else: 
         dataframe = pd.DataFrame(res_json)
@@ -85,7 +86,7 @@ def api_string_constructor(search_items: list, api_endpoint: str, API_KEY):
     """This is going to take a list of things that need to be iterated over and create
     a query string. Will return a request response object
     If using get chall pass it ['1'] otherwise pass it the return from Get_information"""
-    print('Constructing and requesting api')
+    logging.info('Constructing and requesting api')
     response_data_list = []
     count = 0 
     for item in search_items: 
@@ -94,14 +95,19 @@ def api_string_constructor(search_items: list, api_endpoint: str, API_KEY):
             break
         try:
             url = api_endpoint.format(specific=item, API_KEY=API_KEY)
+            logging.info(f'Calling endpoint with {url}')
             response = requests.get(url)
         
         except requests.exceptions.RequestException as e:
-            print(f"Error making API request: {e}")
+            logging.error(f"Error making API request: {e}")
         
         if response.status_code == 200:
             response_data = response.json()
             response_data_list.append(response_data)
+
+        else:
+            logging.error(response.status_code) 
+            quit(response.status_code)
             
     return response_data_list
         
@@ -110,13 +116,13 @@ def api_string_constructor(search_items: list, api_endpoint: str, API_KEY):
 
 def csv_store_function(data, file_name):
     '''Takes a dataframe, turns it into a csv, and then stores in under a given filename'''
-    print(data)
+    print(data.head(3))
     bucket_name = 'csv-store-10001' 
  
 
     csv_data = data.to_csv(index=False)
     try:
-        print('Attemping to store csv')
+        logging.info('Attemping to store csv')
         storage_client = storage.Client()
         bucket = storage_client.get_bucket(bucket_name)
         blob = bucket.blob(file_name)
@@ -128,14 +134,6 @@ def csv_store_function(data, file_name):
     
     
 
-if __name__ == "__main__":
-    info = GetInformation('puuid', 'csv-store-10001', 'Get_PUUID_euw.csv', 2)
-
-    info.download_csv_file()
-    info_list = info.result_list
-    get_matches_api_caller = API_caller(info_list, 'europe', 'tft/match/v1/matches/by-puuid/{specific}/ids?api_key={API_KEY}', API_KEY=
-                                        API_KEY)
-    get_matches_api_caller.make_api_call()
 
 # f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{name}?api_key={API_KEY}"
 # f'https://{region}.api.riotgames.com/tft/league/v1/challenger'
