@@ -108,4 +108,35 @@ resource "google_cloudfunctions2_function" "get_matches_euw_function2" {
   depends_on = [google_storage_bucket_object.get_matches_script]
 } 
 
+
+resource "google_cloudfunctions2_function" "get_detailed_matches_euw_function2" {
+  name = "get-detailed-matches-euw-function41"
+  location = "europe-west2"
+  description = "Get puuid from reading chall csv for euw function"
+
+  build_config {
+    runtime = "python39"
+    entry_point = "entrypoint"  # Set the entry point 
+    source {
+      storage_source {
+        bucket = var.python_script_bucket_name
+        object = "Get_detailed_matches2.zip"
+      }
+    }
+  }
+
+  service_config {
+    max_instance_count  = 1
+    available_memory    = "256M"
+    timeout_seconds     = 60
+
+  secret_environment_variables {
+    key        = var.api_secret_id
+    project_id = var.project_id
+    secret     = var.api_secret_id
+    version    = "latest"
+    }
+  }
+  depends_on = [google_storage_bucket_object.get_detailed_matches_script]
+} 
 # # terraform the composer environment too 
