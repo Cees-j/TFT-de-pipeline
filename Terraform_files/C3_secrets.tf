@@ -24,7 +24,7 @@ resource "google_secret_manager_secret_version" "example_secret_version_api_key"
   # Ok so can just change this secret data, and then as functions are using 'latest' version of secret it will
   # use last input api key as reference.
   # Put this as a tf.vars
-  secret_data = "RGAPI-8b11abca-8522-49c9-b1e0-0d91d0a551c6"
+  secret_data = "RGAPI-72ed199e-7203-444a-a4a9-b485f0746793"
 
   depends_on = [google_secret_manager_secret.secret-basic_api_key]
     

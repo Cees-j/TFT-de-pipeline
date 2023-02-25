@@ -31,6 +31,12 @@ variable "get_chall_euw_url" {
     default     = "europe-west2"
 }
 
+variable "detailed_match_data_url" {
+    description = "gs url for bucket and file, detailed matches"
+    type        = string
+    default     = "europe-west2"
+}
+
 variable "get_chall_euw_dataset_id" {
     description = "id for get_chall dataset"
     type        = string

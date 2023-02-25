@@ -5,8 +5,8 @@ resource "google_bigquery_dataset" "euw-dataset" {
   dataset_id                  = var.get_chall_euw_dataset_id
   project                     = var.project_id
   friendly_name               = "euw-dataset"
-  description                 = "Stores data for euw players"
-  location                    = "EU"
+  description                 = "Stores detailed match data for euw players"
+  location                    = "europe-west2"   # # # # # # # # CRUCIAL
   default_table_expiration_ms = 3600000
 
   labels = {
@@ -16,18 +16,37 @@ resource "google_bigquery_dataset" "euw-dataset" {
 
 # Have to run this twice, once for dataset, once for table
 
-resource "google_bigquery_table" "my_table" {
+# resource "google_bigquery_table" "my_table" {
+#   dataset_id = var.get_chall_euw_dataset_id
+#   table_id   = "Chall-data-euw"
+  
+#   # Set the schema to null to enable auto-detection
+#   schema = null
+
+#   # Set the source format and path for the data in Cloud Storage
+#   # Will take the challenger csv url when uploaded, so is dependent on being named correctly
+#   external_data_configuration {
+#     source_format = "CSV"
+#     source_uris    = [var.get_chall_euw_url]
+#     autodetect     = true
+#   }
+# }
+
+resource "google_bigquery_table" "my_detailed_matches_table" {
   dataset_id = var.get_chall_euw_dataset_id
-  table_id   = "Chall-data-euw"
+  table_id   = "Detailed-data-dump-euw"
   
   # Set the schema to null to enable auto-detection
   schema = null
 
   # Set the source format and path for the data in Cloud Storage
-  # Will take the challenger csv url when uploaded, so is dependent on being named correctly
+  # Makes a table of all the data from detailed match data and inputs into a table
+  # Would need to be deployed after the data is retrieved.
   external_data_configuration {
     source_format = "CSV"
-    source_uris    = [var.get_chall_euw_url]
+    source_uris    = [var.detailed_match_data_url]
     autodetect     = true
   }
+
+  depends_on = [google_bigquery_dataset.euw-dataset]
 }

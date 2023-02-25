@@ -5,5 +5,7 @@ __pycache__/
 credentials.json
 terraform.tfvars
 .terraform*
-terraform.tfstate
 terraform.tfstat*
+*.zip
+api_key.py
+envrio_variables.py 
