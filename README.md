@@ -6,7 +6,6 @@ The project consists of the following files and directories:
 
 Python_scripts/: Directory containing the Python scripts for retrieving and transforming data. <br>
 DAGs/: Directory containing the Airflow DAG definition file for scheduling the Python scripts to run. <br>
-requirements.txt: File containing the Python package dependencies for the project. <br>
 Terraform_files/: Directory containing the Terraform configuration files for provisioning the cloud infrastructure. <br>
 BigQuery_scripts/: Directory containing python scripts for creating BigQuery tables. <br>
 
