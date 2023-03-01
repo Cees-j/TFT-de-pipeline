@@ -8,21 +8,7 @@ Python_scripts/: Directory containing the Python scripts for retrieving and tran
 DAGs/: Directory containing the Airflow DAG definition file for scheduling the Python scripts to run. <br>
 requirements.txt: File containing the Python package dependencies for the project. <br>
 Terraform_files/: Directory containing the Terraform configuration files for provisioning the cloud infrastructure. <br>
-
-# Setup
-To set up the project, follow these steps:
-
-TBC 
-
-# Dependencies
-The project relies on the following Python packages, which are specified in the requirements.txt file:
-
-google-cloud-bigquery <br>
-requests <br>
-pandas <br>
-google-cloud-storage <br>
-google-auth <br>
-google-cloud-bigquery <br>
+BigQuery_scripts/: Directory containing python scripts for creating BigQuery tables. <br>
 
 
 
