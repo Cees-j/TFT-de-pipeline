@@ -27,141 +27,99 @@ google-cloud-bigquery <br>
 
 
 # Data warehouse schema
-
+| Column Name       | Data Type | Constraints               |
+|-------------------|----------|---------------------------|
+| match_id          | integer  | primary key               |
+| game_datetime     | datetime |                           |
+| game_length       | integer  |                           |
+| game_version      | string   |                           |
+| participant_id    | integer  | primary key, foreign key   |
+| puuid             | string   |                           |
+| gold_left         | integer  |                           |
+| last_round        | integer  |                           |
+| level             | integer  |                           |
+| placement         | integer  |                           |
+| players_eliminated| integer  |                           |
+| time_eliminated   | integer  |                           |
+| total_damage_to_players | integer |                   |
+| trait_id          | integer  | primary key               |
+| name              | string   |                           |
+| num_units         | integer  |                           |
+| style             | string   |                           |
+| tier_current      | integer  |                           |
+| tier_total        | integer  |                           |
+| unit_id           | integer  | primary key               |
+| character_id      | string   |                           |
+| itemNames         | string   |                           |
+| items             | string   |                           |
+| name              | string   |                           |
+| rarity            | string   |                           |
+| tier              | integer  |                           |
+| companion_id      | integer  | primary key               |
+| content_ID        | string   |                           |
+| item_ID           | string   |                           |
+| skin_ID           | string   |                           |
+| species           | string   |                           |
+Data Warehouse Schema
 Table: Game
-- match_id (primary key)
-- game_datetime
-- game_length
-- game_version
-
+Column Name	Data Type	Constraints
+match_id	integer	primary key
+game_datetime	datetime	
+game_length	integer	
+game_version	string	
 Table: Participant
-- participant_id (primary key)
-- match_id (foreign key to Game)
-- puuid
-- gold_left
-- last_round
-- level
-- placement
-- players_eliminated
-- time_eliminated
-- total_damage_to_players
-
+Column Name	Data Type	Constraints
+participant_id	integer	primary key
+match_id	integer	foreign key to Game
+puuid	string	
+gold_left	integer	
+last_round	integer	
+level	integer	
+placement	integer	
+players_eliminated	integer	
+time_eliminated	integer	
+total_damage_to_players	integer	
 Table: Trait
-- trait_id (primary key)
-- participant_id (foreign key to Participant)
-- name
-- num_units
-- style
-- tier_current
-- tier_total
-
+Column Name	Data Type	Constraints
+trait_id	integer	primary key
+participant_id	integer	foreign key to Participant
+name	string	
+num_units	integer	
+style	string	
+tier_current	integer	
+tier_total	integer	
 Table: Unit
-- unit_id (primary key)
-- participant_id (foreign key to Participant)
-- character_id
-- itemNames
-- items
-- name
-- rarity
-- tier
-
+Column Name	Data Type	Constraints
+unit_id	integer	primary key
+participant_id	integer	foreign key to Participant
+character_id	string	
+itemNames	string	
+items	string	
+name	string	
+rarity	string	
+tier	integer	
 Table: Companion
-- companion_id (primary key)
-- participant_id (foreign key to Participant)
-- content_ID
-- item_ID
-- skin_ID
-- species
+Column Name	Data Type	Constraints
+companion_id	integer	primary key
+participant_id	integer	foreign key to Participant
+content_ID	string	
+item_ID	string	
+skin_ID	string	
+species	string	
+This data warehouse schema represents the database schema for game information related to a match. The database consists of five tables, Game, Participant, Trait, Unit, and Companion.
 
-Table: ParticipantTrait
-- participant_id (composite primary key with trait_id)
-- trait_id (composite primary key with participant_id)
+The Game table stores general information about the game, including the match_id, game_datetime, game_length, and game_version.
 
-Table: ParticipantUnit
-- participant_id (composite primary key with unit_id)
-- unit_id (composite primary key with participant_id)
+The Participant table stores information about each participant in the match, including the participant_id, match_id, puuid, gold_left, last_round, level, placement, players_eliminated, time_eliminated, and total_damage_to_players.
+
+The Trait table stores information about the traits of each participant in the game. It includes the trait_id, participant_id, name, num_units, style, tier_current, and tier_total.
+
+The Unit table stores information about each unit in the game. It includes the unit_id, participant_id, character_id, itemNames, items, name, rarity, and tier.
+
+The Companion table stores information about the companions of each participant in the game. It includes the companion_id, participant_id, content_ID, item_ID, skin_ID, and species.
+
+This data warehouse schema shows how these tables are related to each other using the match_id and participant_id columns. The match_id column serves as a foreign key in Participant, Trait, Unit, and Game tables, linking them together. The participant_id column is used to identify the individual participants within each match and serves as a foreign key in Trait, Unit, Companion, and `Participant
 
 
 
 
--- Fact table: Game Results
-CREATE TABLE game_results (
-    match_id INT NOT NULL,
-    total_damage_to_players INT,
-    players_eliminated INT,
-    placement INT,
-    gold_left INT,
-    last_round INT,
-    game_length INT,
-    num_units INT,
-    num_traits INT,
-    PRIMARY KEY (match_id)
-);
-
--- Dimension table: Match
-CREATE TABLE match (
-    match_id INT PRIMARY KEY,
-    game_datetime DATETIME,
-    game_version VARCHAR(50)
-);
-
--- Dimension table: Participant
-CREATE TABLE participant (
-    participant_id INT PRIMARY KEY,
-    match_id INT,
-    puuid VARCHAR(50),
-    time_eliminated INT,
-    level INT,
-    FOREIGN KEY (match_id) REFERENCES match(match_id)
-);
-
--- Dimension table: Unit
-CREATE TABLE unit (
-    unit_id INT PRIMARY KEY,
-    participant_id INT,
-    character_id VARCHAR(50),
-    item_names VARCHAR(100),
-    items VARCHAR(100),
-    name VARCHAR(50),
-    rarity INT,
-    tier INT,
-    FOREIGN KEY (participant_id) REFERENCES participant(participant_id)
-);
-
--- Dimension table: Trait
-CREATE TABLE trait (
-    trait_id INT PRIMARY KEY,
-    name VARCHAR(50),
-    style VARCHAR(50),
-    tier_current INT,
-    tier_total INT
-);
-
--- Dimension table: Companion
-CREATE TABLE companion (
-    companion_id INT PRIMARY KEY,
-    participant_id INT,
-    content_id VARCHAR(50),
-    item_id VARCHAR(50),
-    skin_id VARCHAR(50),
-    species VARCHAR(50),
-    FOREIGN KEY (participant_id) REFERENCES participant(participant_id)
-);
-
--- Bridge table: Participant Trait
-CREATE TABLE participant_trait (
-    participant_id INT,
-    trait_id INT,
-    PRIMARY KEY (participant_id, trait_id),
-    FOREIGN KEY (participant_id) REFERENCES participant(participant_id),
-    FOREIGN KEY (trait_id) REFERENCES trait(trait_id)
-);
-
--- Bridge table: Participant Unit
-CREATE TABLE participant_unit (
-    participant_id INT,
-    unit_id INT,
-    PRIMARY KEY (participant_id, unit_id),
-    FOREIGN KEY (participant_id) REFERENCES participant(participant_id),
-    FOREIGN KEY (unit_id) REFERENCES unit(unit_id)
-);
