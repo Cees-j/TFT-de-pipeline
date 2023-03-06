@@ -48,3 +48,9 @@ variable "api_secret_id" {
     type        = string
     default     = "https://developer.riotgames.com/"
 }
+
+variable "actual_api_key" {
+    description = "api_key value stored in secrets manager"
+    type        = string
+    default     = "https://developer.riotgames.com/"
+}

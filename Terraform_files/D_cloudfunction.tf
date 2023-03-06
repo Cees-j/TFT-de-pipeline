@@ -29,7 +29,12 @@ resource "google_cloudfunctions2_function" "get_chall_euw_function2" {
       version    = "latest"
     }
   }
-  depends_on = [google_secret_manager_secret_iam_member.api_key_secret_iam_02]
+  depends_on = [
+    google_storage_bucket_object.get_chall_script,
+    google_storage_bucket_object.get_puuid_script2,
+    google_storage_bucket_object.get_matches_script,
+    google_storage_bucket_object.get_detailed_matches_script
+  ]
 } 
 
 resource "google_project_iam_member" "gcf-invoking" {
@@ -52,7 +57,7 @@ resource "google_cloudfunctions2_function" "get_puuid_euw_function2" {
 
   build_config {
     runtime = "python39"
-    entry_point = "entrypoint"  # Set the entry point 
+    entry_point = "entrypoint"  
     source {
       storage_source {
         bucket = var.python_script_bucket_name
@@ -73,7 +78,7 @@ resource "google_cloudfunctions2_function" "get_puuid_euw_function2" {
     version    = "latest"
     }
   }
-  depends_on = [google_storage_bucket_object.get_puuid_script2]
+  depends_on = [google_cloudfunctions2_function.get_chall_euw_function2]
 } 
 
 
@@ -84,7 +89,7 @@ resource "google_cloudfunctions2_function" "get_matches_euw_function2" {
 
   build_config {
     runtime = "python39"
-    entry_point = "entrypoint"  # Set the entry point 
+    entry_point = "entrypoint"  
     source {
       storage_source {
         bucket = var.python_script_bucket_name
@@ -105,7 +110,7 @@ resource "google_cloudfunctions2_function" "get_matches_euw_function2" {
     version    = "latest"
     }
   }
-  depends_on = [google_storage_bucket_object.get_matches_script]
+  depends_on = [google_cloudfunctions2_function.get_puuid_euw_function2]
 } 
 
 
@@ -116,7 +121,7 @@ resource "google_cloudfunctions2_function" "get_detailed_matches_euw_function2" 
 
   build_config {
     runtime = "python39"
-    entry_point = "entrypoint"  # Set the entry point 
+    entry_point = "entrypoint"  
     source {
       storage_source {
         bucket = var.python_script_bucket_name
@@ -137,6 +142,5 @@ resource "google_cloudfunctions2_function" "get_detailed_matches_euw_function2" 
     version    = "latest"
     }
   }
-  depends_on = [google_storage_bucket_object.get_detailed_matches_script]
+  depends_on = [google_cloudfunctions2_function.get_matches_euw_function2]
 } 
-# # terraform the composer environment too 
