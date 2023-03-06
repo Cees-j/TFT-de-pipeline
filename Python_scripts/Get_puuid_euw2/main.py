@@ -21,21 +21,3 @@ def entrypoint(req):
     csv_store_function(processed_data, 'sailmate')
     return('200, ok')
 
-# Get_info = GetInformation('name', 'csv-store-10001', 'euw_chall.csv', 1)
-
-# initial_data = Get_info.download_csv_file()
-
-# print('Data to iterate over:', initial_data)
-
-
-# response_data = api_string_constructor(initial_data, 
-#                        api_endpoint="https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{specific}?api_key={API_KEY}",
-#                        API_KEY=API_KEY)
-
-# print(response_data)
-
-# # Ok so it starts to go awry when passing another specific value other than api_KEY, ok
-
-# processed_data = process_response_object(response_data, nested_key=None)
-
-# csv_store_function(processed_data, 'sailmate')

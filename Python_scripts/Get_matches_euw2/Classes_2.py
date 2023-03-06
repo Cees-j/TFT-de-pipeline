@@ -3,8 +3,8 @@ import requests
 from google.cloud import storage
 import pandas as pd
 import logging
-import csv
 import os 
+import time
 
 API_KEY = os.environ.get('API_KEY')
 
@@ -91,7 +91,7 @@ def api_string_constructor(search_items: list, api_endpoint: str, API_KEY):
     count = 0 
     for item in search_items: 
         count += 1 
-        if count > 5:
+        if count > 5: ## rate limit protection
             break
         try:
             url = api_endpoint.format(specific=item, API_KEY=API_KEY)
@@ -100,6 +100,7 @@ def api_string_constructor(search_items: list, api_endpoint: str, API_KEY):
         
         except requests.exceptions.RequestException as e:
             logging.error(f"Error making API request: {e}")
+            quit(e)
         
         if response.status_code == 200:
             response_data = response.json()
@@ -115,11 +116,16 @@ def api_string_constructor(search_items: list, api_endpoint: str, API_KEY):
 
 
 def csv_store_function(data, file_name):
-    '''Takes a dataframe, turns it into a csv, and then stores in under a given filename'''
+    '''Takes a dataframe, turns it into a csv, and then stores in under a given filename
+    in google cloud storage bucket, if its the dump file, then we need to make multiple files with 
+    the same time but different time stamp to them accumulate into one import into a dump table'''
     print(data.head(3))
     bucket_name = 'csv-store-10001' 
- 
 
+    if file_name == 'sailmate3':
+        current_timestamp = int(time.time())
+        file_name = f'{file_name}_{current_timestamp}'
+    
     csv_data = data.to_csv(index=False)
     try:
         logging.info('Attemping to store csv')
