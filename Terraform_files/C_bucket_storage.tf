@@ -4,7 +4,7 @@ name     = var.python_script_bucket_name
 location = var.region
 force_destroy = true
 
-depends_on = [google_storage_bucket.terraform_state_bucket]
+#depends_on = [google_storage_bucket.terraform_state_bucket]
 }
 
 resource "google_storage_bucket" "csv_store" {

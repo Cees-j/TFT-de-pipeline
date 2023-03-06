@@ -133,7 +133,7 @@ resource "google_cloudfunctions2_function" "get_detailed_matches_euw_function2" 
   service_config {
     max_instance_count  = 1
     available_memory    = "256M"
-    timeout_seconds     = 60
+    timeout_seconds     = 300
 
   secret_environment_variables {
     key        = var.api_secret_id
