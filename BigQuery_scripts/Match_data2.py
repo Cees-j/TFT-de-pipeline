@@ -1,7 +1,7 @@
 from google.cloud import bigquery
-######MATCH_DATA2 AND CREATING TABLE TASKS 4 WORKS
+
 def create_match_data_table_job():
-    
+
     location = 'europe-west2'
     # Set up the BigQuery client and job config
     client = bigquery.Client(location=location)
@@ -24,9 +24,15 @@ def create_match_data_table_job():
             JSON_EXTRACT_SCALAR(string_field_1, '$.game_version') AS game_version
         FROM `get_chall_euw_dataset_id.Detailed-data-dump-euw`
     );
-    """
-
-    client.query(create_match_data_table, job_config=job_config)
+    """ 
+    try:
+        print('Starting query to create table')
+        client.query(create_match_data_table, job_config=job_config)
+        print('Query finished, table created')
+    except Exception as e:
+        print(f'Error creating table: {str(e)}')
+        raise e
+    #client.query(create_match_data_table, job_config=job_config)
 
 def delete_unnecessary_job():
     location = 'europe-west2'
