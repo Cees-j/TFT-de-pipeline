@@ -30,7 +30,7 @@ def create_traits_table():
         UNNEST(JSON_EXTRACT_ARRAY(participant, '$.traits')) AS trait
     );"""   
 
-    logging.info('please work logging :) ')
+    
 
     insert_traits_data_query = """INSERT INTO `get_chall_euw_dataset_id.traits_data`
     (   match_id,

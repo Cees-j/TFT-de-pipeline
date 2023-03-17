@@ -29,7 +29,6 @@ def create_companion_table_job():
         participant_id, 
         companion_id 
     )
-    AS ( 
         SELECT
         JSON_EXTRACT_SCALAR(string_field_0, '$.match_id') AS match_id,
         CAST(JSON_EXTRACT_SCALAR(participant, '$.puuid') AS STRING) AS participant_id,
@@ -37,7 +36,7 @@ def create_companion_table_job():
     FROM `get_chall_euw_dataset_id.Detailed-data-dump-euw`, 
         UNNEST(JSON_EXTRACT_ARRAY(string_field_1, '$.participants')) AS participant,
         UNNEST(JSON_EXTRACT_ARRAY(participant, '$.traits')) AS trait
-    );"""
+    ;"""   
 
     job = client.query(create_companion_table, job_config=job_config)
     try: 

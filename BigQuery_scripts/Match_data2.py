@@ -37,14 +37,13 @@ def create_match_data_table_job():
         game_version 
 
     )
-    AS (
         SELECT 
             JSON_EXTRACT_SCALAR(string_field_0, '$.match_id')  AS match_id,
             CAST(JSON_EXTRACT_SCALAR(string_field_1, '$.game_datetime') AS INT64) AS game_datetime,
             CAST(JSON_EXTRACT_SCALAR(string_field_1, '$.game_length') AS FLOAT64) AS game_length,
             JSON_EXTRACT_SCALAR(string_field_1, '$.game_version') AS game_version
         FROM `get_chall_euw_dataset_id.Detailed-data-dump-euw`
-    );
+    ;
     """ 
     print('Starting query to create table')
     job = client.query(create_match_data_table, job_config=job_config)

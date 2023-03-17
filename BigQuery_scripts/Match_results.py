@@ -16,19 +16,17 @@ def create_match_results_job():
         placement INT64,
         gold_left INT64,
         last_round INT64,
-        game_length FLOAT64,
         level INT64,
     )
-    AS (
+       AS(
         SELECT 
-            CAST(JSON_EXTRACT_SCALAR(participant, '$.puuid') AS STRING) AS participant_id,
             JSON_EXTRACT_SCALAR(string_field_0, '$.match_id') AS match_id,
+            CAST(JSON_EXTRACT_SCALAR(participant, '$.puuid') AS STRING) AS participant_id,
             CAST(JSON_EXTRACT_SCALAR(participant, '$.total_damage_to_players') AS INT64) AS total_damage_to_players,
             CAST(JSON_EXTRACT_SCALAR(participant, '$.players_eliminated') AS INT64) AS players_eliminated,
             CAST(JSON_EXTRACT_SCALAR(participant, '$.placement') AS INT64) AS placement,
             CAST(JSON_EXTRACT_SCALAR(participant, '$.gold_left') AS INT64) AS gold_left,
             CAST(JSON_EXTRACT_SCALAR(participant, '$.last_round') AS INT64) AS last_round,
-            CAST(JSON_EXTRACT_SCALAR(string_field_1, '$.game_length') AS FLOAT64) AS game_length,
             CAST(JSON_EXTRACT_SCALAR(participant, '$.level') AS INT64) AS level,
         FROM `get_chall_euw_dataset_id.Detailed-data-dump-euw`,
             UNNEST(JSON_EXTRACT_ARRAY(string_field_1, '$.participants')) AS participant
@@ -43,23 +41,20 @@ def create_match_results_job():
         placement,
         gold_left,
         last_round,
-        game_length,
         level 
     )
-    AS (
         SELECT 
-            CAST(JSON_EXTRACT_SCALAR(participant, '$.puuid') AS STRING) AS participant_id,
             JSON_EXTRACT_SCALAR(string_field_0, '$.match_id') AS match_id,
+            CAST(JSON_EXTRACT_SCALAR(participant, '$.puuid') AS STRING) AS participant_id,
             CAST(JSON_EXTRACT_SCALAR(participant, '$.total_damage_to_players') AS INT64) AS total_damage_to_players,
             CAST(JSON_EXTRACT_SCALAR(participant, '$.players_eliminated') AS INT64) AS players_eliminated,
             CAST(JSON_EXTRACT_SCALAR(participant, '$.placement') AS INT64) AS placement,
             CAST(JSON_EXTRACT_SCALAR(participant, '$.gold_left') AS INT64) AS gold_left,
             CAST(JSON_EXTRACT_SCALAR(participant, '$.last_round') AS INT64) AS last_round,
-            CAST(JSON_EXTRACT_SCALAR(string_field_1, '$.game_length') AS FLOAT64) AS game_length,
             CAST(JSON_EXTRACT_SCALAR(participant, '$.level') AS INT64) AS level,
         FROM `get_chall_euw_dataset_id.Detailed-data-dump-euw`,
             UNNEST(JSON_EXTRACT_ARRAY(string_field_1, '$.participants')) AS participant
-    );
+    ;
     """
 
     create_match_results_table_job = client.query(create_match_results_table, job_config=job_config)
@@ -114,7 +109,6 @@ def create_units_by_player_and_match_job():
         tier,
         item_names
     )
-    AS (
         SELECT
     JSON_EXTRACT_SCALAR(string_field_0, '$.match_id') AS match_id,
     CAST(JSON_EXTRACT_SCALAR(participant, '$.puuid') AS STRING) AS participant_id,
@@ -125,7 +119,7 @@ def create_units_by_player_and_match_job():
     FROM `get_chall_euw_dataset_id.Detailed-data-dump-euw`,
         UNNEST(JSON_EXTRACT_ARRAY(string_field_1, '$.participants')) AS participant,
         UNNEST(JSON_EXTRACT_ARRAY(participant, '$.units')) AS unit
-    );
+    ;
     """
 
     create_units_by_player_and_match_query_job = client.query(create_units_by_player_and_match_query, job_config=job_config)
